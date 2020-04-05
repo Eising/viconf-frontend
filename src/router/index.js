@@ -1,29 +1,51 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import ProvisionServiceView from '../views/ProvisionServiceView.vue'
+import ComposeTemplateView from '../views/ComposeTemplate.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  }
+    {
+        path: '/',
+        name: 'Provision',
+        component: ProvisionServiceView
+    },
+    {
+        path: '/templates',
+        name: 'TemplateList',
+        component: () => import(/* webpackChunkName: "TemplateList" */ '../views/TemplateListView.vue')
+    },
+    {
+        path: '/templates/compose',
+        name: 'TemplateCompose',
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: ComposeTemplateView
+    },
+    {
+        path: '/templates/:id/edit',
+        name: 'TemplateEdit',
+        component: ComposeTemplateView,
+        props: true,
+    },
+    {
+        path: '/nodes',
+        name: 'NodeList',
+        component: () => import(/* webpackChunkName: "Nodelist" */ '../views/NodeListView.vue')
+    },
+    {
+        path: '/groups',
+        name: 'GroupList',
+        component: () => import(/* webpackChunkName: "GroupList" */ '../views/GroupListView.vue')
+    },
 ]
 
 const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes
 })
 
 export default router
