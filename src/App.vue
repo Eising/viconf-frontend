@@ -30,6 +30,16 @@
                             <v-list-item-title>Templates</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
+                   <v-list-item to="/resource_services">
+                        <v-list-item-content>
+                            <v-list-item-title>Resource Services</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                   <v-list-item to="/services">
+                        <v-list-item-content>
+                            <v-list-item-title>Network Services</v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
                 </v-list-group>
                 <v-list-group
                     prepend-icon="mdi-router"

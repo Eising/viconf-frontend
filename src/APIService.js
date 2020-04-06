@@ -75,5 +75,49 @@ export class APIService {
         const url = `${API_URL}/api/v1/groups/${name}/`
         return axios.patch(url, data).then(response => response.data)
     }
+    listResourceServices() {
+        const url = `${API_URL}/api/v1/resource_services/`
+        return axios.get(url).then(response => response.data)
+    }
+    getResourceService(pk) {
+        const url = `${API_URL}/api/v1/resource_services/${pk}/`
+        return axios.get(url).then(response => response.data)
+    }
+    updateResourceService(pk) {
+        const url = `${API_URL}/api/v1/resource_services/${pk}/`
+        return axios.put(url).then(response => response.data)
+    }
+    deleteResourceService(pk) {
+        const url = `${API_URL}/api/v1/resource_services/${pk}/`
+        return axios.delete(url).then(response => response.data)
+    }
+    createResourceService(data) {
+        const url = `${API_URL}/api/v1/resource_services/`
+        return axios.post(url, data).then(response => response.data)
+    }
+    listServices() {
+        const url = `${API_URL}/api/v1/services/`
+        return axios.get(url).then(response => response.data)
+    }
+    createService(data) {
+        const url = `${API_URL}/api/v1/services/`
+        return axios.post(url, data).then(response => response.data)
+    }
+    getService(pk) {
+        const url = `${API_URL}/api/v1/services/${pk}/`
+        return axios.get(url).then(response => response.data)
+    }
+    updateService(pk) {
+        const url = `${API_URL}/api/v1/services/${pk}/`
+        return axios.put(url).then(response => response.data)
+    }
+    deleteService(pk) {
+        const url = `${API_URL}/api/v1/services/${pk}/`
+        return axios.delete(url).then(response => response.data)
+    }
+    getServiceSchema(pk) {
+        const url = `${API_URL}/api/v1/services/${pk}/schema/`
+        return axios.get(url).then(response => response.data)
+    }
 
 }

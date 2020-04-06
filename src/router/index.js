@@ -31,6 +31,26 @@ const routes = [
         props: true,
     },
     {
+        path: '/resource_services',
+        name: "ResourceServiceList",
+        component: () => import(/* webpackChunkName: "ResourceServiceList" */ '../views/ResourceServiceListView.vue')
+    },
+    {
+        path: '/resource_services/new',
+        name: "ResourceServiceCreate",
+        component: () => import(/* webpackChunkName: "ResourceServiceCreate" */ '../views/ResourceServiceCreateView.vue')
+    },
+    {
+        path: '/services',
+        name: "ServiceList",
+        component: () => import(/* webpackChunkName: "ServiceList" */ '../views/ServiceListView.vue')
+    },
+    {
+        path: '/services/new',
+        name: "ServiceCreate",
+        component: () => import(/* webpackChunkName: "ServiceCreate" */ '../views/ServiceCreateView.vue')
+    },
+    {
         path: '/nodes',
         name: 'NodeList',
         component: () => import(/* webpackChunkName: "Nodelist" */ '../views/NodeListView.vue')
