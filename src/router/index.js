@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import ProvisionServiceView from '../views/ProvisionServiceView.vue'
+import ListServiceOrderView from '../views/ListServiceOrdersView.vue'
 import ComposeTemplateView from '../views/ComposeTemplate.vue'
 
 Vue.use(VueRouter)
@@ -8,6 +9,11 @@ Vue.use(VueRouter)
 const routes = [
     {
         path: '/',
+        name: 'ServiceOrderList',
+        component: ListServiceOrderView
+    },
+    {
+        path: '/provision',
         name: 'Provision',
         component: ProvisionServiceView
     },

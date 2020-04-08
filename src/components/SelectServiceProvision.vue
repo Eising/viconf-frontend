@@ -19,11 +19,6 @@
                     hint="Customer/service location information"
                     v-model="location"
                 ></v-text-field>
-                <v-text-field
-                    label="Speed"
-                    hint="Service speed if applicable"
-                    v-model="speed"
-                ></v-text-field>
                 <v-select
                     label="Select Service"
                     :items="services"
@@ -56,7 +51,7 @@
                 </v-toolbar>
                 <v-spacer></v-spacer>
                 <v-card-text>
-                    <ProvisionServiceComponent></ProvisionServiceComponent>
+                    <ProvisionServiceComponent :key="service"></ProvisionServiceComponent>
                 </v-card-text>
             </v-card>
         </v-dialog>
@@ -117,14 +112,6 @@
              },
              set (value) {
                  this.$store.commit('updateSOlocation', value)
-             }
-         },
-         speed: {
-             get () {
-                 return this.$store.state.serviceorder.speed
-             },
-             set (value) {
-                 this.$store.commit('updateSOspeed', value)
              }
          },
          service: {

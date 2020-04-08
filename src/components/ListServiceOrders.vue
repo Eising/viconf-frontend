@@ -1,0 +1,148 @@
+<template>
+    <div id="serviceorderlist">
+        <v-card>
+            <v-card-title>Service Orders</v-card-title>
+            <v-card-text>
+                <v-data-table
+                    :headers="headers"
+                    :items="serviceorders"
+                    :loading="isLoading"
+                >
+                    <template v-slot:item.actions="{ item }">
+                        <v-menu
+                            bottom
+                            left
+                            :key="item.id"
+                        >
+                            <template v-slot:activator="{ on }">
+                                <v-btn
+                                    icon
+                                    v-on="on"
+                                >
+                                    <v-icon>mdi-dots-vertical</v-icon>
+                                </v-btn>
+                            </template>
+                            <v-list>
+                                <v-list-item>
+                                    <v-list-item-title @click="showConfig(item.id)">View configuration</v-list-item-title>
+                                </v-list-item>
+                                <v-list-item>
+                                    <v-list-item-title>Delete Service Order</v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
+                    </template>
+                    <template v-slot:top>
+                        <v-btn
+                            color="pink"
+                            small
+                            absolute
+                            top
+                            right
+                            fab
+                            dark
+                            :to="{ name: 'Provision'}"
+                        >
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                    </template>
+
+                </v-data-table>
+            </v-card-text>
+        </v-card>
+        <v-dialog
+            v-model="config"
+            max-width="800px"
+        >
+            <v-card>
+                <v-toolbar
+                    dark
+                    color="primary"
+                >
+                    <v-btn
+                        icon
+                        dark
+                        @click="config = false"
+                    >
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>Configuration</v-toolbar-title>
+                </v-toolbar>
+                <v-spacer></v-spacer>
+                <v-card-text>
+                    <template v-if="selectedService != null">
+                        <ViewConfigComponent :key="selectedService" :id="selectedService"></ViewConfigComponent>
+                    </template>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
+    </div>
+</template>
+
+<script>
+ import ViewConfigComponent from './ViewConfig.vue'
+ export default {
+     name: 'ListServiceOrdersComponent',
+     components: {
+         ViewConfigComponent
+
+     },
+     props: {
+     },
+     data: () => ({
+         config: false,
+         selectedService: null,
+         headers: [
+             {
+                 text: "#",
+                 value: "id"
+             },
+             {
+                 text: "Reference",
+                 value: "reference"
+             },
+             {
+                 text: "Customer",
+                 value: "customer"
+             },
+             {
+                 text: "Location",
+                 value: "location"
+             },
+             {
+                 text: "Service",
+                 value: "service_name"
+             },
+             {
+                 text: '',
+                 value: "actions",
+                 sortable: false,
+                 align: 'end'
+             }
+         ],
+         isLoading: false,
+         serviceorders: [],
+
+
+     }),
+     methods: {
+         async fetchData() {
+             this.isLoading = true
+             this.$api.listServiceOrders()
+                 .then(res => (this.serviceorders = res))
+                 .catch(err => {
+                     console.log(err)
+                 })
+                 .then(() => (this.isLoading = false))
+         },
+         showConfig(id) {
+             this.selectedService = id
+             this.config = true
+         }
+
+     },
+     mounted() {
+         this.fetchData()
+     }
+ }
+</script>

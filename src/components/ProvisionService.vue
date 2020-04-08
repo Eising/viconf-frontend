@@ -1,7 +1,10 @@
 <template>
     <div id="provisionservicecomponent" class="mt-10">
         <div v-if="isLoaded">
-            <v-stepper v-model="step">
+            <v-stepper
+                v-model="step"
+                :alt-labels="true"
+            >
                 <v-stepper-header>
                     <v-stepper-step
                         v-for="n in Object.keys(schema.template_fields).length"
@@ -14,7 +17,9 @@
                         <span v-else>Node {{ Object.keys(schema.template_fields)[n -1] }}</span>
                     </v-stepper-step>
                     <v-stepper-step
-                        :step="Object.keys(schema.template_fields).length + 1"
+                        :step="lastfield"
+                        :key="`${lastfield}-step`"
+                        :complete="step > (Object.keys(schema.template_fields).length + 1)"
                         editable
                     >
                         Provision Service
@@ -57,7 +62,7 @@
                         </v-card>
                     </v-stepper-content>
                     <v-stepper-content
-                        :step="Object.keys(schema.template_fields).length + 1"
+                        :step="lastfield"
                     >
                         <v-card>
                             <v-card-text>
@@ -65,6 +70,12 @@
                                     {{ JSON.stringify(getServiceOrderComplete(), undefined, 2) }}
                                 </code>
                             </v-card-text>
+                            <v-card-actions>
+                                <v-btn
+                                    color="primary"
+                                    @click="submitServiceOrder"
+                                >Submit</v-btn>
+                            </v-card-actions>
                         </v-card>
                     </v-stepper-content>
 
@@ -81,11 +92,15 @@
 
      },
      props: {
+         id: {
+             type: Number,
+             required: false
+         },
      },
      data: () => ({
          isLoaded: false,
          form: null,
-         step: 0,
+         step: 1,
          schema: null,
          serviceorder: {},
          nodes: []
@@ -98,6 +113,19 @@
                      console.log(err)
                  })
                  .then(() => (this.isLoaded = true))
+         },
+         async fetchServiceOrder(pk) {
+             this.$api.getServiceOrder(pk)
+                 .then(res => (this.setServiceParamters(res)))
+                 .catch(err => {
+                     console.log(err)
+                 })
+         },
+         setServiceParamters(service_order) {
+             this.schema = service_order
+             this.reference = service_order.reference
+             this.customer = service_order.customer
+             this.location = service_order.location
          },
          async fetchNodes() {
              this.$api.listNodes()
@@ -125,7 +153,6 @@
                  reference: this.reference,
                  customer: this.customer,
                  location: this.location,
-                 speed: this.speed,
                  service: this.service,
                  template_fields: {}
              }
@@ -151,16 +178,45 @@
                  }
              }
              return serv
+         },
+         async submitServiceOrder() {
+             if (this.id == undefined) {
+                 this.$api.createServiceOrder(this.getServiceOrderComplete())
+                     .then(() => {this.$router.push({name: "ServiceOrderList"})})
+                     .catch(err => {
+                         console.log(err)
+                     })
+             }
+             else {
+                 this.$api.updateServiceOrder(this.id, this.getServiceOrderComplete())
+                     .then(() => (this.$emit('updated')))
+                     .catch(err => {
+                         console.log(err)
+                     })
+             }
          }
 
      },
      mounted() {
-         if (this.service != null) {
-             this.fetchSchema()
+         if (this.id == undefined) {
+             if (this.service != null) {
+                 this.fetchSchema()
+             }
+             this.fetchNodes()
          }
-         this.fetchNodes()
+         else {
+             this.fetchServiceOrder(this.id)
+         }
+     },
+     watch: {
+
      },
      computed: {
+         lastfield: {
+             get () {
+                 return Object.keys(this.schema.template_fields).length +1
+             },
+         },
           reference: {
              get () {
                  return this.$store.state.serviceorder.reference
@@ -185,14 +241,6 @@
                  this.$store.commit('updateSOlocation', value)
              }
          },
-         speed: {
-             get () {
-                 return this.$store.state.serviceorder.speed
-             },
-             set (value) {
-                 this.$store.commit('updateSOspeed', value)
-             }
-         },
          service: {
              get () {
                  return this.$store.state.serviceorder.service
@@ -207,7 +255,6 @@
                      reference: this.reference,
                      customer: this.customer,
                      location: this.location,
-                     speed: this.speed,
                      service: this.service,
                      template_fields: {}
                  }
@@ -241,3 +288,10 @@
 
  }
 </script>
+
+<style>
+ .v-stepper__step {
+  flex: 1 1;
+}
+
+</style>

@@ -119,5 +119,26 @@ export class APIService {
         const url = `${API_URL}/api/v1/services/${pk}/schema/`
         return axios.get(url).then(response => response.data)
     }
+    listServiceOrders() {
+        const url = `${API_URL}/api/v1/orders/`
+        return axios.get(url).then(response => response.data)
+    }
+    createServiceOrder(data) {
+        const url = `${API_URL}/api/v1/orders/`
+        return axios.post(url, data).then(response => response.data)
+    }
+    getServiceOrder(pk) {
+        const url = `${API_URL}/api/v1/orders/${pk}/`
+        return axios.get(url).then(response => response.data)
+    }
+    updateServiceOrder(pk, data) {
+        const url = `${API_URL}/api/v1/orders/${pk}/`
+        return axios.put(url, data).then(response => response.data)
+    }
+    getServiceOrderConfig(pk) {
+        const url = `${API_URL}/api/v1/orders/${pk}/config/`
+        return axios.get(url).then(response => response.data)
+    }
+
 
 }
