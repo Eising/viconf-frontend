@@ -10,12 +10,22 @@
             >
                 <v-list-item to="/">
                     <v-list-item-icon>
-                        <v-icon>mdi-home</v-icon>
+                        <v-icon>mdi-format-list-text</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
-                        <v-list-item-title>Home</v-list-item-title>
+                        <v-list-item-title>Service Orders</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+                <v-list-item to="/provision">
+                    <v-list-item-icon>
+                        <v-icon>mdi-file-cog</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Provision Service</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+
+
                 <v-list-group
                     prepend-icon="mdi-code-json"
                     no-action

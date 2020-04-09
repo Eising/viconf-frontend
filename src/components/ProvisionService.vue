@@ -1,95 +1,113 @@
 <template>
     <div id="provisionservicecomponent" class="mt-10">
         <div v-if="isLoaded">
-            <v-stepper
-                v-model="step"
-                :alt-labels="true"
-            >
-                <v-stepper-header>
-                    <v-stepper-step
-                        v-for="n in Object.keys(schema.template_fields).length"
-                        :key="`${n}-step`"
-                        :complete="step > n"
-                        :step="n"
-                        editable
-                    >
-                        <span v-if="Object.keys(schema.template_fields)[n -1] == '__NONODE__'">Unspecified Node</span>
-                        <span v-else>Node {{ Object.keys(schema.template_fields)[n -1] }}</span>
-                    </v-stepper-step>
-                    <v-stepper-step
-                        :step="lastfield"
-                        :key="`${lastfield}-step`"
-                        :complete="step > (Object.keys(schema.template_fields).length + 1)"
-                        editable
-                    >
-                        Provision Service
-                    </v-stepper-step>
-                </v-stepper-header>
-                <v-stepper-items>
-                    <v-stepper-content
-                        v-for="n in Object.keys(schema.template_fields).length"
-                        :key="`${n}-content`"
-                        :step="n"
-                    >
-                        <v-card>
-                            <v-card-text>
-                                <div v-if="Object.keys(schema.template_fields)[n -1] == '__NONODE__'">
-                                    <v-select
-                                        :items="nodes"
-                                        label="Select node"
-                                        @change="updateServiceOrder('__NONODE__', 'node', $event)"
-                                    ></v-select>
-                                </div>
 
-                                <div
-                                    v-for="(opts, field) in schema.template_fields[Object.keys(schema.template_fields)[n -1]]"
-                                    :key="`${field}-${n}`"
-                                >
-                                    <v-text-field
-                                        :label="opts.label"
-                                        :value="opts.default"
-                                        @change="updateServiceOrder(Object.keys(schema.template_fields)[n -1], field, $event)"
-                                    ></v-text-field>
-                                </div>
-                            </v-card-text>
-                            <v-card-actions>
-                                <v-btn
-                                    @click="step += 1"
-                                >
-                                    Continue
-                                </v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-stepper-content>
-                    <v-stepper-content
-                        :step="lastfield"
+            <ValidationObserver ref="observer" v-slot="{ invalid }">
+                <form @submit.prevent="submitServiceOrder">
+                    <v-stepper
+                        v-model="step"
+                        :alt-labels="true"
                     >
-                        <v-card>
-                            <v-card-text>
-                                <code>
-                                    {{ JSON.stringify(getServiceOrderComplete(), undefined, 2) }}
-                                </code>
-                            </v-card-text>
-                            <v-card-actions>
-                                <v-btn
-                                    color="primary"
-                                    @click="submitServiceOrder"
-                                >Submit</v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-stepper-content>
+                        <v-stepper-header>
+                            <v-stepper-step
+                                v-for="n in Object.keys(schema.template_fields).length"
+                                :key="`${n}-step`"
+                                :complete="step > n"
+                                :step="n"
+                                editable
+                            >
+                                <span v-if="Object.keys(schema.template_fields)[n -1] == '__NONODE__'">Unspecified Node</span>
+                                <span v-else>Node {{ Object.keys(schema.template_fields)[n -1] }}</span>
+                            </v-stepper-step>
+                            <v-stepper-step
+                                :step="lastfield"
+                                :key="`${lastfield}-step`"
+                                :complete="step > (Object.keys(schema.template_fields).length + 1)"
+                                editable
+                            >
+                                Provision Service
+                            </v-stepper-step>
+                        </v-stepper-header>
+                        <v-stepper-items>
+                            <v-stepper-content
+                                v-for="n in Object.keys(schema.template_fields).length"
+                                :key="`${n}-content`"
+                                :step="n"
+                            >
+                                <v-card>
+                                    <v-card-text>
+                                        <div v-if="Object.keys(schema.template_fields)[n -1] == '__NONODE__'">
+                                            <v-select
+                                                :items="nodes"
+                                                label="Select node"
+                                                @change="updateServiceOrder('__NONODE__', 'node', $event)"
+                                                required
+                                            ></v-select>
+                                        </div>
 
-                </v-stepper-items>
-            </v-stepper>
+                                        <div
+                                            v-for="(opts, field) in schema.template_fields[Object.keys(schema.template_fields)[n -1]]"
+                                            :key="`${field}-${n}`"
+                                        >
+
+                                            <ValidationProvider v-slot="{ errors }" :name="opts.label" :rules="`required|${opts.validator}`">
+                                                <v-text-field
+                                                    :label="opts.label"
+                                                    :value="getServiceOrderField(Object.keys(schema.template_fields)[n -1], field, opts.default)"
+                                                    @change="updateServiceOrder(Object.keys(schema.template_fields)[n -1], field, $event)"
+                                                    :error-messages="errors"
+                                                    required
+                                                ></v-text-field>
+                                            </ValidationProvider>
+                                        </div>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn
+                                            @click="step += 1"
+                                        >
+                                            Continue
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-stepper-content>
+                            <v-stepper-content
+                                :step="lastfield"
+                            >
+                                <v-card>
+                                    <v-card-text>
+                                        <code>
+                                            {{ JSON.stringify(getServiceOrderComplete(), undefined, 2) }}
+                                        </code>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-btn
+                                            color="primary"
+                                            @click="submitServiceOrder"
+                                            :disabled="invalid"
+                                        >Submit</v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-stepper-content>
+
+                        </v-stepper-items>
+                    </v-stepper>
+                </form>
+            </ValidationObserver>
         </div>
     </div>
 </template>
 
 <script>
+ import { ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
+ import validations from '@/validation.js'
+ validations.ValidationSetup();
+ setInteractionMode('eager')
+
  export default {
      name: 'ProvisionServiceComponent',
      components: {
-
+         ValidationProvider,
+         ValidationObserver,
      },
      props: {
          id: {
@@ -145,8 +163,16 @@
                  this.serviceorder[node][field] = value
              }
          },
-         getServiceOrderField(node, field) {
-             return this.serviceorder[node][field]
+         getServiceOrderField(node, field, defaultval) {
+             if (node in this.serviceorder) {
+                 if (field in this.serviceorder[node]) {
+                     return this.serviceorder[node][field]
+                 }
+                 else {
+                     return defaultval
+                 }
+             }
+            return defaultval
          },
          getServiceOrderComplete() {
              const serv = {
@@ -180,6 +206,8 @@
              return serv
          },
          async submitServiceOrder() {
+
+             this.$refs.observer.validate()
              if (this.id == undefined) {
                  this.$api.createServiceOrder(this.getServiceOrderComplete())
                      .then(() => {this.$router.push({name: "ServiceOrderList"})})
@@ -217,7 +245,7 @@
                  return Object.keys(this.schema.template_fields).length +1
              },
          },
-          reference: {
+         reference: {
              get () {
                  return this.$store.state.serviceorder.reference
              },
@@ -291,7 +319,7 @@
 
 <style>
  .v-stepper__step {
-  flex: 1 1;
-}
+     flex: 1 1;
+ }
 
 </style>
