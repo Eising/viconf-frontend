@@ -23,8 +23,8 @@
                                 </v-btn>
                             </template>
                             <v-list>
-                                <v-list-item>
-                                    <v-list-item-title @click="showConfig(item.id)">View configuration</v-list-item-title>
+                                <v-list-item @click="showConfig(item.id)">
+                                    <v-list-item-title>View configuration</v-list-item-title>
                                 </v-list-item>
                                 <v-list-item>
                                     <v-list-item-title>Delete Service Order</v-list-item-title>
@@ -57,7 +57,7 @@
             <v-card>
                 <v-toolbar
                     dark
-                    color="primary"
+                    color="teal"
                 >
                     <v-btn
                         icon
