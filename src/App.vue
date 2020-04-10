@@ -2,8 +2,16 @@
     <v-app>
         <v-navigation-drawer
             v-model="drawer"
+            color="blue-grey lighten-5"
             app
         >
+            <v-toolbar
+                dark
+                color="teal"
+            >
+                <v-toolbar-title>Viconf</v-toolbar-title>
+            </v-toolbar>
+
             <v-list
                 dense
                 nav
@@ -78,11 +86,10 @@
 
         <v-app-bar
             app
-            color="indigo"
+            color="teal darken-1"
             dark
         >
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-            <v-toolbar-title>Viconf</v-toolbar-title>
         </v-app-bar>
 
         <v-content>
@@ -99,12 +106,6 @@
                 </v-row>
             </v-container>
         </v-content>
-        <v-footer
-            color="indigo"
-            app
-        >
-            <span class="white--text">&copy; 2020</span>
-        </v-footer>
     </v-app>
 </template>
 
