@@ -25,13 +25,19 @@
                                 <v-row>
                                     <v-col cols="12">
                                         <h3>Service Up</h3>
-                                        <code v-text="node.service_up"></code>
+                                        <code
+                                            class="config"
+                                            v-text="node.service_up"
+                                        ></code>
                                     </v-col>
                                 </v-row>
                                 <v-row>
                                     <v-col cols="12">
                                         <h3>Service Down</h3>
-                                        <code v-text="node.service_down"></code>
+                                        <code
+                                            class="config"
+                                            v-text="node.service_down"
+                                        ></code>
                                     </v-col>
                                 </v-row>
                             </v-container>
@@ -44,6 +50,7 @@
 </template>
 
 <script>
+
  export default {
      name: 'ViewConfigComponent',
      components: {
@@ -72,3 +79,9 @@
      }
  }
 </script>
+
+<style scoped>
+    .config  {
+        font-family: "Inconsolata", monospace;
+    }
+</style>

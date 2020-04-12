@@ -3,11 +3,12 @@
         <v-card>
             <v-card-title>Templates</v-card-title>
             <v-card-text>
-                <v-container>
                     <v-data-table
                         :headers="headers"
                         :items="templates"
                         :loading="isLoading"
+                        dense
+
                     >
                         <template v-slot:item.actions="{ item }">
                             <router-link :to="{ name: 'TemplateEdit', params: { id: item.id }}">
@@ -41,7 +42,6 @@
                         </template>
 
                     </v-data-table>
-                </v-container>
             </v-card-text>
 
         </v-card>
