@@ -6,12 +6,14 @@
                 <form @submit.prevent="submitServiceOrder">
                     <v-stepper
                         v-model="step"
-                        :alt-labels="true"
+                        vertical
                     >
-                        <v-stepper-header>
+                        <div
+                            v-for="n in Object.keys(schema.template_fields).length"
+                            :key="`${n}-step`"
+                        >
+
                             <v-stepper-step
-                                v-for="n in Object.keys(schema.template_fields).length"
-                                :key="`${n}-step`"
                                 :complete="step > n"
                                 :step="n"
                                 editable
@@ -19,6 +21,46 @@
                                 <span v-if="Object.keys(schema.template_fields)[n -1] == '__NONODE__'">Unspecified Node</span>
                                 <span v-else>Node {{ Object.keys(schema.template_fields)[n -1] }}</span>
                             </v-stepper-step>
+                            <v-stepper-content
+                                :step="n"
+                            >
+                                <v-card-text>
+                                    <div v-if="Object.keys(schema.template_fields)[n -1] == '__NONODE__'">
+                                        <v-select
+                                            :items="nodes"
+                                            label="Select node"
+                                            @change="updateServiceOrder('__NONODE__', 'node', $event)"
+                                            required
+                                        ></v-select>
+                                    </div>
+
+                                    <div
+                                        v-for="(opts, field) in schema.template_fields[Object.keys(schema.template_fields)[n -1]]"
+                                        :key="`${field}-${n}`"
+                                    >
+
+                                        <ValidationProvider v-slot="{ errors }" :name="opts.label" :rules="`required|${opts.validator}`">
+                                            <v-text-field
+                                                :label="opts.label"
+                                                :value="getServiceOrderField(Object.keys(schema.template_fields)[n -1], field, opts.default)"
+                                                @change="updateServiceOrder(Object.keys(schema.template_fields)[n -1], field, $event)"
+                                                :error-messages="errors"
+                                                required
+                                            ></v-text-field>
+                                        </ValidationProvider>
+                                    </div>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn
+                                        @click="step += 1"
+                                    >
+                                        Continue
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-stepper-content>
+                        </div>
+                        <div>
+
                             <v-stepper-step
                                 :step="lastfield"
                                 :key="`${lastfield}-step`"
@@ -27,49 +69,6 @@
                             >
                                 Provision Service
                             </v-stepper-step>
-                        </v-stepper-header>
-                        <v-stepper-items>
-                            <v-stepper-content
-                                v-for="n in Object.keys(schema.template_fields).length"
-                                :key="`${n}-content`"
-                                :step="n"
-                            >
-                                <v-card>
-                                    <v-card-text>
-                                        <div v-if="Object.keys(schema.template_fields)[n -1] == '__NONODE__'">
-                                            <v-select
-                                                :items="nodes"
-                                                label="Select node"
-                                                @change="updateServiceOrder('__NONODE__', 'node', $event)"
-                                                required
-                                            ></v-select>
-                                        </div>
-
-                                        <div
-                                            v-for="(opts, field) in schema.template_fields[Object.keys(schema.template_fields)[n -1]]"
-                                            :key="`${field}-${n}`"
-                                        >
-
-                                            <ValidationProvider v-slot="{ errors }" :name="opts.label" :rules="`required|${opts.validator}`">
-                                                <v-text-field
-                                                    :label="opts.label"
-                                                    :value="getServiceOrderField(Object.keys(schema.template_fields)[n -1], field, opts.default)"
-                                                    @change="updateServiceOrder(Object.keys(schema.template_fields)[n -1], field, $event)"
-                                                    :error-messages="errors"
-                                                    required
-                                                ></v-text-field>
-                                            </ValidationProvider>
-                                        </div>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-btn
-                                            @click="step += 1"
-                                        >
-                                            Continue
-                                        </v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-stepper-content>
                             <v-stepper-content
                                 :step="lastfield"
                             >
@@ -88,8 +87,8 @@
                                     </v-card-actions>
                                 </v-card>
                             </v-stepper-content>
+                        </div>
 
-                        </v-stepper-items>
                     </v-stepper>
                 </form>
             </ValidationObserver>
