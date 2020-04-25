@@ -4,8 +4,9 @@
             <v-card-title v-if="edit">Edit Template</v-card-title>
             <v-card-title v-else>Compose Template</v-card-title>
             <v-card-text>
-                <v-form
+                <form
                     ref="form"
+                    @submit.prevent="submit"
                 >
                     <v-text-field
                         v-model="name"
@@ -15,7 +16,6 @@
                     <v-text-field
                         v-model="description"
                         label="Template description"
-                        required
                     ></v-text-field>
                     <v-card flat>
                         <v-card-title>Template Composition</v-card-title>
@@ -30,6 +30,7 @@
                         v-model="up_contents"
                         filled
                         auto-grow
+                        outlined
                         label="Template for service activation"
                     ></v-textarea>
                     <v-divider />
@@ -37,11 +38,14 @@
                         v-model="down_contents"
                         filled
                         auto-grow
+                        outlined
                         label="Template for service removal"
                     ></v-textarea>
-                    <v-btn @click="submit">submit</v-btn>
+                    <v-btn
+                        type="submit"
+                    >submit</v-btn>
 
-                </v-form>
+                </form>
             </v-card-text>
         </v-card>
         <v-dialog

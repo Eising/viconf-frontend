@@ -92,15 +92,20 @@
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         </v-app-bar>
 
-        <v-content>
+        <v-content class="grey lighten-5">
             <v-container
                 fluid
             >
                 <v-row>
-                    <v-col>
-                        <v-container fluid>
-                            <router-view></router-view>
-                        </v-container>
+                    <v-col cols="12">
+                        <v-row justify="center">
+                            <v-col
+                                cols="12"
+                                md="6"
+                                >
+                                <router-view></router-view>
+                            </v-col>
+                        </v-row>
 
                     </v-col>
                 </v-row>

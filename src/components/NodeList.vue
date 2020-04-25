@@ -82,7 +82,7 @@
                                 right
                                 fab
                                 dark
-                                @click="dialog = true"
+                                @click="addNode"
                             >
                                 <v-icon>mdi-plus</v-icon>
                             </v-btn>
@@ -97,49 +97,23 @@
             persistent
             max-width="600px"
         >
-            <v-card>
-                <v-card-title>New Node</v-card-title>
-                <v-card-text>
-                    <v-container>
-                        <v-row>
-                            <v-col cols="12">
-                                <v-text-field label="Hostname" required v-model="newnode.hostname"></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field label="Site" v-model="newnode.site"></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field label="IPv4 Address" v-model="newnode.ipv4"></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field label="IPv6 Address" v-model="newnode.ipv6"></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-select v-model="newnode.driver" label="Driver" :items="drivers"></v-select>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field label="comment" v-model="newnode.comment"></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-select v-model="newnode.group" label="Group" :items="groups"></v-select>
-                            </v-col>
-                        </v-row>
-                    </v-container>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                        color="blue darken-1"
-                        text
-                        @click="dialog = !dialog"
-                    >Close</v-btn>
-                    <v-btn
-                        color="blue darken-1"
-                        text
-                        @click="addNode"
-                    >Add</v-btn>
-                </v-card-actions>
-            </v-card>
+            <add-node
+                @add-node-error="displayError"
+                @add-node-success="addNodeToTable"
+                @add-node-close="dialog = !dialog"
+            ></add-node>
+
+        </v-dialog>
+        <v-dialog
+            v-model="groupadddialog"
+            persistent
+            max-width="600px"
+        >
+            <add-group
+                @add-group-error="displayError"
+                @add-group-success="addGroupToList"
+                @add-group-close="groupadddialog = false"
+            ></add-group>
         </v-dialog>
 
 
@@ -151,9 +125,14 @@
 </template>
 
 <script>
+ import NodeListAddNode from './NodeListAddNode.vue'
+ import GroupListAddGroup from './GroupListAddGroup.vue'
+
  export default {
      name: 'NodeListComponent',
      components: {
+         'add-node': NodeListAddNode,
+         'add-group': GroupListAddGroup
 
      },
      props: {
@@ -205,12 +184,12 @@
                  value: 'none'
              }
          ],
-         groups: [],
          snack: false,
          snackColor: '',
          snackText: '',
          dialog: false,
-         newnode: {},
+         groupadddialog: false,
+         groups: []
      }),
      methods: {
          async fetchData() {
@@ -240,17 +219,24 @@
                      console.log(err)
              })
          },
-         async fetchGroups() {
-             this.$api.listGroups()
-                 .then(res => (this.updateGroups(res)))
-         },
-         updateGroups(groups) {
-             groups.forEach(group => {
-                 this.groups.push({
-                     text: group.name,
-                     value: group.name
+         async addNode() {
+             if (this.groups.length == 0) {
+                 const res = await this.$dialog.confirm({
+                     text: 'There are no groups defined. Do you want to add a group first?',
+                     title: 'No groups defined'
                  })
-             })
+                 if (res) {
+                     this.groupadddialog = true
+                 }
+             }
+             else {
+                this.dialog = true
+             }
+         },
+         addGroupToList(group) {
+             this.groups.push(group)
+             this.groupadddialog = false
+             this.dialog = true
          },
          displaySuccess() {
              this.snack = true
@@ -267,24 +253,28 @@
              this.snackColor = 'error'
              this.snackText = 'Remote error'
          },
-         async addNode() {
-             this.$api.createNode(this.newnode)
-                 .then(() => (this.addNodeToTable()))
-                 .catch(err => {
-                     this.snack = true
-                     this.snackColor = 'error'
-                     this.snackText = 'Remote error'
-                     console.log(err)
-                 })
-         },
-         addNodeToTable() {
-             this.nodes.push(this.newnode)
+         addNodeToTable(node) {
+             this.nodes.push(node)
              this.newnode = {}
              this.dialog = false
              this.snack = true
              this.snackColor = 'success'
              this.snackText = 'Node added'
-         }
+         },
+
+         async fetchGroups() {
+             this.$api.listGroups()
+                 .then(res => (this.updateGroups(res)))
+         },
+         updateGroups(groups) {
+             groups.forEach(group => {
+                 this.groups.push({
+                     text: group.name,
+                     value: group.name
+                 })
+             })
+         },
+
      },
      mounted() {
          this.fetchData()

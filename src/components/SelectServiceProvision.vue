@@ -1,70 +1,78 @@
 <template>
     <div id="selectserviceprovisioncomponent">
-        <ValidationObserver ref="observer" v-slot="{ invalid }">
-            <v-expansion-panels
-                :value="baseform"
+        <template v-if="services.length > 0">
+            <ValidationObserver ref="observer" v-slot="{ invalid }">
+                <v-expansion-panels
+                    :value="baseform"
+                >
+                    <v-expansion-panel>
+                        <v-expansion-panel-header>Provision Service</v-expansion-panel-header>
+                        <v-expansion-panel-content>
+                            <v-card>
+                                <v-card-text>
+                                    <ValidationProvider v-slot="{ errors }" name="reference" rules="required">
+                                        <v-text-field
+                                            label="Reference"
+                                            hint="A service reference"
+                                            v-model="reference"
+                                            :error-messages="errors"
+                                            required
+                                        >
+                                        </v-text-field>
+                                    </ValidationProvider>
+                                    <ValidationProvider v-slot="{ errors }" name="customer" rules="required">
+                                        <v-text-field
+                                            label="Customer"
+                                            hint="Customer name or reference"
+                                            v-model="customer"
+                                            :error-messages="errors"
+                                            required
+                                        ></v-text-field>
+                                    </ValidationProvider>
+                                    <ValidationProvider v-slot="{ errors }" name="location" rules="required">
+                                        <v-text-field
+                                            label="Location"
+                                            hint="Customer/service location information"
+                                            v-model="location"
+                                            :error-messages="errors"
+                                            required
+                                        ></v-text-field>
+                                    </ValidationProvider>
+                                    <ValidationProvider v-slot="{ errors }" name="service" rules="required">
+                                        <v-select
+                                            label="Select Service"
+                                            :items="services"
+                                            v-model="service"
+                                            :error-messages="errors"
+                                            required
+                                        ></v-select>
+                                    </ValidationProvider>
+                                </v-card-text>
+                                <v-card-actions>
+                                    <v-btn
+                                        color="primary"
+                                        @click="openProvisioner"
+                                        :disabled="invalid"
+                                    >Start</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+            </ValidationObserver>
+            <div
+                v-if="provisioner"
             >
-                <v-expansion-panel>
-                    <v-expansion-panel-header>Provision Service</v-expansion-panel-header>
-                    <v-expansion-panel-content>
-                        <v-card>
-                            <v-card-text>
-                                <ValidationProvider v-slot="{ errors }" name="reference" rules="required">
-                                    <v-text-field
-                                        label="Reference"
-                                        hint="A service reference"
-                                        v-model="reference"
-                                        :error-messages="errors"
-                                        required
-                                    >
-                                    </v-text-field>
-                                </ValidationProvider>
-                                <ValidationProvider v-slot="{ errors }" name="customer" rules="required">
-                                    <v-text-field
-                                        label="Customer"
-                                        hint="Customer name or reference"
-                                        v-model="customer"
-                                        :error-messages="errors"
-                                        required
-                                    ></v-text-field>
-                                </ValidationProvider>
-                                <ValidationProvider v-slot="{ errors }" name="location" rules="required">
-                                    <v-text-field
-                                        label="Location"
-                                        hint="Customer/service location information"
-                                        v-model="location"
-                                        :error-messages="errors"
-                                        required
-                                    ></v-text-field>
-                                </ValidationProvider>
-                                <ValidationProvider v-slot="{ errors }" name="service" rules="required">
-                                    <v-select
-                                        label="Select Service"
-                                        :items="services"
-                                        v-model="service"
-                                        :error-messages="errors"
-                                        required
-                                    ></v-select>
-                                </ValidationProvider>
-                            </v-card-text>
-                            <v-card-actions>
-                                <v-btn
-                                    color="primary"
-                                    @click="openProvisioner"
-                                    :disabled="invalid"
-                                >Start</v-btn>
-                            </v-card-actions>
-                        </v-card>
-                    </v-expansion-panel-content>
-                </v-expansion-panel>
-            </v-expansion-panels>
-        </ValidationObserver>
-        <div
-            v-if="provisioner"
-        >
 
-            <ProvisionServiceComponent :key="service"></ProvisionServiceComponent>
-        </div>
+                <ProvisionServiceComponent :key="service"></ProvisionServiceComponent>
+            </div>
+        </template>
+        <template v-else>
+            <h1>Provision Service</h1>
+            <p class="error--text">
+                No services have been defined. Please create one or more services from the Resource menu.
+            </p>
+        </template>
 
     </div>
 </template>

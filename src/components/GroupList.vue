@@ -46,41 +46,11 @@
             persistent
             max-width="600px"
         >
-            <v-card>
-                <v-card-title>New Group</v-card-title>
-                <v-card-text>
-                    <v-container>
-                        <v-row>
-                            <v-col cols="12">
-                                <v-text-field label="Name" required v-model="newgroup.name"></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field label="Username" required v-model="newgroup.username"></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field label="Password" required v-model="newgroup.password"></v-text-field>
-                            </v-col>
-                            <v-col cols="12">
-                                <v-text-field label="Enable password" required v-model="newgroup.enable_password"></v-text-field>
-                            </v-col>
-
-                        </v-row>
-                    </v-container>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                        color="blue darken-1"
-                        text
-                        @click="dialog = !dialog"
-                    >Close</v-btn>
-                    <v-btn
-                        color="blue darken-1"
-                        text
-                        @click="addGroup"
-                    >Add</v-btn>
-                </v-card-actions>
-            </v-card>
+            <add-group
+                @add-group-success="addGroupToTable"
+                @add-group-error="displayError"
+                @add-group-close="dialog = !dialog"
+            ></add-group>
         </v-dialog>
 
         <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
@@ -91,9 +61,11 @@
 </template>
 
 <script>
+ import GroupListAddGroup from './GroupListAddGroup.vue'
  export default {
      name: 'GroupListComponent',
      components: {
+         'add-group': GroupListAddGroup
 
      },
      props: {
@@ -128,7 +100,6 @@
          snack: false,
          snackColor: '',
          snackText: '',
-         newgroup: {},
          dialog: false,
 
      }),
@@ -155,25 +126,20 @@
                      })
              }
          },
-         async addGroup() {
-             this.$api.createGroup(this.newgroup)
-                 .then(() => (this.addGroupToTable()))
-                 .catch(err => {
-                     this.snack = true
-                     this.snackColor = 'error'
-                     this.snackText = 'Remote error'
-                     console.log(err)
-                 })
-
-         },
-         addGroupToTable() {
-             this.groups.push(this.newgroup)
+         addGroupToTable(group) {
+             this.groups.push(group)
              this.newgroup = {}
              this.dialog = false
              this.snack = true
              this.snackColor = 'success'
              this.snackText = 'Group added'
-         }
+         },
+         displayError() {
+             this.snack = true
+             this.snackColor = 'error'
+             this.snackText = 'Remote error'
+         },
+
      },
      mounted() {
          this.fetchData()
