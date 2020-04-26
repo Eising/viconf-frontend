@@ -42,6 +42,12 @@ export class APIService {
                 return new Promise((resolve, reject) => {
                     reject(error)
                 })
+            } else if (error.config.url == `${API_URL}/api/token/`) {
+                this.clear()
+                router.push({name: 'login'})
+                return new Promise((resolve, reject) => {
+                    reject(error)
+                })
             }
             return this.getNewToken()
                 .then((token)=> {
