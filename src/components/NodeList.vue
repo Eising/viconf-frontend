@@ -98,6 +98,7 @@
             max-width="600px"
         >
             <add-node
+                :key="addNodeIndex"
                 @add-node-error="displayError"
                 @add-node-success="addNodeToTable"
                 @add-node-close="dialog = !dialog"
@@ -189,7 +190,8 @@
          snackText: '',
          dialog: false,
          groupadddialog: false,
-         groups: []
+         groups: [],
+         addNodeIndex: 0,
      }),
      methods: {
          async fetchData() {
@@ -260,6 +262,7 @@
              this.snack = true
              this.snackColor = 'success'
              this.snackText = 'Node added'
+             this.addNodeIndex++
          },
 
          async fetchGroups() {
