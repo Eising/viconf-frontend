@@ -129,7 +129,8 @@
                         <v-row justify="center">
                             <v-col
                                 cols="12"
-                                md="6"
+                                xl="6"
+                                md="10"
                                 >
                                 <router-view></router-view>
                             </v-col>
