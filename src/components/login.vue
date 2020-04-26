@@ -1,38 +1,45 @@
 <template>
     <div id="logincomponent">
-        <v-card>
-            <v-card-title>Login</v-card-title>
-            <v-card-text>
-                <ValidationObserver ref="observer">
-                    <form @submit.prevent="doLogin">
-                        <ValidationProvider v-slot="{ errors }" name="username" rules="required">
+        <ValidationObserver ref="observer">
+            <form @submit.prevent="doLogin">
+                <v-card>
+                    <v-card-title>Login</v-card-title>
+                    <v-card-text>
+                        <ValidationProvider v-slot="{ errors }" name="username" rules="required" ref="username">
                             <v-text-field
                                 label="Username"
                                 required
                                 :error-messages="errors"
                                 v-model="username"
+                                prepend-icon="mdi-account"
                             ></v-text-field>
                         </ValidationProvider>
-                        <ValidationProvider v-slot="{ errors }" name="password" rules="required">
+                        <ValidationProvider v-slot="{ errors }" name="password" rules="required" ref="password">
                             <v-text-field
                                 label="Password"
                                 required
                                 v-model="password"
                                 :error-messages="errors"
                                 type="password"
+                                prepend-icon="mdi-lock"
                             ></v-text-field>
                         </ValidationProvider>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-spacer />
                         <v-btn
+                            color="primary"
                             type="submit"
                         >Login</v-btn>
-                    </form>
-                </ValidationObserver>
-            </v-card-text>
-        </v-card>
-        <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
-            {{ snackText }}
-            <v-btn text @click="snack = false">Close</v-btn>
-        </v-snackbar>
+                    </v-card-actions>
+
+                </v-card>
+                <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
+                    {{ snackText }}
+                    <v-btn text @click="snack = false">Close</v-btn>
+                </v-snackbar>
+            </form>
+        </ValidationObserver>
     </div>
 </template>
 
@@ -69,12 +76,25 @@
                      this.$router.go(-1)
                  })
                  .catch((err) => {
-                     console.log(err)
-                     this.snack = true
-                     this.snackColor = 'error'
-                     this.snackText = 'Invalid username or password'
+                     this.handleError(err)
                  })
-         }
+         },
+         handleError(error) {
+             if (error.response.status === 401) {
+                 this.$refs.username.applyResult({
+                     errors: [ "Username or password incorrect" ],
+                     valid: false,
+                     failedRules: {}
+                 })
+                 this.$refs.password.applyResult({
+                     errors: [ "Username or password incorrect" ],
+                     valid: false,
+                     failedRules: {}
+                 })
+             }
+             console.log(error)
+         },
+
      },
      mounted() {
      }

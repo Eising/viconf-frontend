@@ -90,6 +90,34 @@
             dark
         >
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+            <v-spacer />
+            <v-menu bottom right>
+                <template v-slot:activator="{ on }">
+                    <v-btn
+                        icon
+                        large
+                        v-on="on"
+                    >
+                        <v-avatar>
+                            <v-icon dark>mdi-account-circle</v-icon>
+                        </v-avatar>
+                    </v-btn>
+                </template>
+                <v-list>
+                    <v-list-item
+                        v-if="loggedIn"
+                        @click="logout"
+                    >
+                        <v-list-item-title>Logout</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item
+                        v-else
+                        to="/login"
+                    >
+                        <v-list-item-title>Login</v-list-item-title>
+                    </v-list-item>
+                </v-list>
+            </v-menu>
         </v-app-bar>
 
         <v-content class="grey lighten-5">
@@ -127,5 +155,19 @@
          drawer: null,
          //
      }),
+     methods: {
+         logout() {
+             this.$api.clear()
+             this.$router.push({name: 'login'})
+         },
+         login() {
+             this.$router.push({name: 'login'})
+         },
+     },
+     computed: {
+         loggedIn: function () {
+             return this.$api.isAuthenticated()
+         }
+     }
  };
 </script>
