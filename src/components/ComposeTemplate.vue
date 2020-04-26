@@ -17,37 +17,68 @@
                         v-model="description"
                         label="Template description"
                     ></v-text-field>
-                    <v-card flat>
-                        <v-card-title>Template Composition</v-card-title>
-                        <v-card-text>
-                            <p>
-                                Enter your template here. Use <span v-pre>{{ }}</span> around your variables.
-                            </p>
-                        </v-card-text>
-                    </v-card>
-                    <v-divider />
-                    <v-textarea
-                        v-model="up_contents"
-                        filled
-                        auto-grow
-                        outlined
-                        ref="upcontent"
-                        label="Template for service activation"
-                        @keydown="handleKeyDown"
-                    >
-                    </v-textarea>
-                    <v-divider />
-                    <v-textarea
-                        v-model="down_contents"
-                        filled
-                        auto-grow
-                        outlined
-                        label="Template for service removal"
-                        @keydown="handleKeyDown"
-                    ></v-textarea>
+                    <v-container fluid>
+                        <v-row>
+                            <v-col
+                                cols="12"
+                                md="8"
+                                >
+                                <v-textarea
+                                    v-model="up_contents"
+                                    filled
+                                    auto-grow
+                                    outlined
+                                    ref="upcontent"
+                                    label="Template for service activation"
+                                    @keydown="handleKeyDown"
+                                >
+                                </v-textarea>
+                                <v-divider />
+                                <v-textarea
+                                    v-model="down_contents"
+                                    filled
+                                    auto-grow
+                                    outlined
+                                    label="Template for service removal"
+                                    @keydown="handleKeyDown"
+                                ></v-textarea>
+                            </v-col>
+                            <v-col
+                                cols="12"
+                                md="4"
+                            >
+                                <v-card>
+                                    <v-card-title>Template help</v-card-title>
+                                    <v-card-text>
+                                        <span class="title" v-pre>{{ variable }}</span>
+                                        <p class="body-2">Use {{  }} around variables. The type of variable will be chosen on template submission</p>
+                                        <span class="title">Global variables</span>
+                                        <p class="body-2">You can use the following to refer to the global service options:</p>
+                                        <ul>
+                                            <li v-pre>{{ customer }}</li>
+                                            <li v-pre>{{ location }}</li>
+                                            <li v-pre>{{ reference }}</li>
+                                            <li v-pre>{{ node }} </li>
+                                        </ul>
+                                        <span class="title">Template hierarchy</span>
+                                        <p class="body-2" v-pre>
+                                            You can specify a template to have all other templates inserted at a certain position.<br>
+                                            Insert the magic tag {{! maintemplate }} in the top and at the point where you want the other templates, insert the {{! subtemplates }} tag.
+                                        </p>
+                                        <p class="body-2" v-pre>
+                                            You can exclude individual templates from this by specifying the magic tag {{! subexclude }}.
+                                            These templates will always be added to the end of the configuration.
+                                        </p>
+
+                                    </v-card-text>
+                                </v-card>
+                            </v-col>
+                        </v-row>
+                    </v-container>
                     <v-btn
                         type="submit"
                     >submit</v-btn>
+
 
                 </form>
             </v-card-text>
