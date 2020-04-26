@@ -2,7 +2,7 @@
     <v-app>
         <v-navigation-drawer
             v-model="drawer"
-            color="blue-grey lighten-5"
+            color="blue-grey lighten-4"
             app
         >
             <v-toolbar
@@ -120,7 +120,7 @@
             </v-menu>
         </v-app-bar>
 
-        <v-content class="grey lighten-5">
+        <v-content class="blue-grey lighten-5">
             <v-container
                 fluid
             >
