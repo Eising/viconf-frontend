@@ -31,8 +31,11 @@
                         filled
                         auto-grow
                         outlined
+                        ref="upcontent"
                         label="Template for service activation"
-                    ></v-textarea>
+                        @keydown="handleKeyDown"
+                    >
+                    </v-textarea>
                     <v-divider />
                     <v-textarea
                         v-model="down_contents"
@@ -40,6 +43,7 @@
                         auto-grow
                         outlined
                         label="Template for service removal"
+                        @keydown="handleKeyDown"
                     ></v-textarea>
                     <v-btn
                         type="submit"
@@ -71,6 +75,7 @@
 
 
 <script>
+// import { getIndent, getDeindentLevel } from "../util/getIndent";
  import UpdateFieldsComponent from '@/components/UpdateFields.vue'
  export default {
      name: 'ComposeTemplateComponent',
@@ -116,6 +121,12 @@
              }
              else {
                  this.postData(data)
+             }
+         },
+         handleKeyDown(evt) {
+             if (evt.keyCode === 9) {
+                 document.execCommand("insertHTML", false, "  ");
+                 evt.preventDefault()
              }
          },
          async postData(data) {
