@@ -48,6 +48,36 @@
                                     dense
 
                                 >
+                                    <template v-slot:item.default="props">
+                                        <v-edit-dialog
+                                            :return-value.sync="props.item.default"
+                                            @save="updateRS(item.id, item.defaults)"
+                                        >{{ props.item.default }}
+                                            <template v-slot:input>
+                                                <v-text-field
+                                                    v-model="props.item.default"
+                                                    label="Edit"
+                                                    single-line
+                                                ></v-text-field>
+                                            </template>
+                                        </v-edit-dialog>
+                                    </template>
+                                    <template v-slot:item.configurable="props">
+                                        <v-edit-dialog
+                                            large
+                                            :return-value.sync="props.item.configurable"
+                                            @save="updateRS(item.id, item.defaults)"
+                                        >{{ props.item.configurable ? "Yes" : "No" }}
+                                            <template v-slot:input>
+                                                <v-select
+                                                    v-model="props.item.configurable"
+                                                    :items="boolSelect"
+                                                    single-line
+                                                ></v-select>
+                                            </template>
+                                        </v-edit-dialog>
+                                    </template>
+
                                 </v-data-table>
                             </v-container>
                         </td>
@@ -124,6 +154,16 @@
                  value: "configurable"
              }
          ],
+         boolSelect: [
+             {
+                 text: "Yes",
+                 value: true
+             },
+             {
+                 text: "No",
+                 value: false
+             }
+         ],
          snack: false,
          snackColor: '',
          snackText: '',
@@ -161,11 +201,25 @@
                      })
              }
          },
+         async updateRS(pk, item) {
+             console.log(item)
+             this.$api.updateResourceService(pk, {defaults: item})
+                 .then(() => (this.displaySuccess()))
+                 .catch((err) => {
+                     this.displayError()
+                     console.log(err)
+                 })
+         },
          displayError() {
              this.snack = true
              this.snackColor = 'error'
              this.snackText = 'Remote error'
-         }
+         },
+         displaySuccess() {
+             this.snack = true
+             this.snackColor = 'success'
+             this.snackText = 'Data saved'
+         },
      },
      mounted() {
          this.fetchData()

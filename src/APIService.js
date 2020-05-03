@@ -206,9 +206,9 @@ export class APIService {
         const url = `${API_URL}/api/v1/resource_services/${pk}/`
         return this.instance.get(url).then(response => response.data)
     }
-    updateResourceService(pk) {
+    updateResourceService(pk, data) {
         const url = `${API_URL}/api/v1/resource_services/${pk}/`
-        return this.instance.put(url).then(response => response.data)
+        return this.instance.patch(url, data).then(response => response.data)
     }
     deleteResourceService(pk) {
         const url = `${API_URL}/api/v1/resource_services/${pk}/`
