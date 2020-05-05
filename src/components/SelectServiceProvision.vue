@@ -117,6 +117,7 @@
          },
      },
      mounted() {
+         this.$store.commit('resetSO')
          this.getServiceList()
      },
      computed: {

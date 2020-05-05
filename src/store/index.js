@@ -66,6 +66,15 @@ export default new Vuex.Store({
       updateSOservice (state, value) {
           state.serviceorder.service = value
       },
+      resetSO (state) {
+          state.serviceorder = {
+              reference: '',
+              customer: '',
+              location: '',
+              speed: '',
+              service: null
+          }
+      },
   },
   actions: {
   },

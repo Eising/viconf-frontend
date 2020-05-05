@@ -209,7 +209,9 @@
              this.$refs.observer.validate()
              if (this.id == undefined) {
                  this.$api.createServiceOrder(this.getServiceOrderComplete())
-                     .then(() => {this.$router.push({name: "ServiceOrderList"})})
+                     .then(() => {
+                         this.$router.push({name: "ServiceOrderList"})
+                     })
                      .catch(err => {
                          console.log(err)
                      })
