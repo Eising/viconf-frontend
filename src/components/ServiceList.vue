@@ -101,7 +101,33 @@
                  })
                  .then(this.isLoading = false)
 
-         }
+         },
+         async deleteService(pk) {
+             const res = await this.$dialog.confirm({
+                 text: "Are you sure you want to delete this Service",
+                 title: "Warning"
+             })
+             if (res) {
+                 this.$api.deleteService(pk)
+                     .then(() => {
+                         this.services = this.services.filter(function(e) {
+                             if (e.id != pk) {
+                                 return e
+                             }
+                         })
+                     })
+                     .catch((err) => {
+                         this.displayError()
+                         console.log(err)
+                     })
+             }
+         },
+         displayError() {
+             this.snack = true
+             this.snackColor = 'error'
+             this.snackText = 'Remote error'
+         },
+
      },
      mounted() {
          this.fetchData()

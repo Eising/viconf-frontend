@@ -191,8 +191,11 @@
              if (res) {
                  this.$api.deleteResourceService(pk)
                      .then(() => {
-                         // FIXME: This doesn't work!
-                         this.services.filter(item => item.id !== pk)
+                         this.services = this.services.filter(function(e) {
+                             if (e.id != pk) {
+                                 return e
+                             }
+                         })
 
                      })
                      .catch(err => {

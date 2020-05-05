@@ -10,7 +10,7 @@
                         <v-expansion-panel-content>
                             <v-card>
                                 <v-card-text>
-                                    <ValidationProvider v-slot="{ errors }" name="reference" rules="required">
+                                    <ValidationProvider v-slot="{ errors }" name="reference" rules="required|digits">
                                         <v-text-field
                                             label="Reference"
                                             hint="A service reference"
