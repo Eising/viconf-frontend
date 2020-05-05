@@ -26,7 +26,7 @@
                                 <v-list-item @click="showConfig(item.id)">
                                     <v-list-item-title>View configuration</v-list-item-title>
                                 </v-list-item>
-                                <v-list-item>
+                                <v-list-item @click="deleteServiceOrder(item.id)">
                                     <v-list-item-title>Delete Service Order</v-list-item-title>
                                 </v-list-item>
                             </v-list>
@@ -76,6 +76,10 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
+        <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
+            {{ snackText }}
+            <v-btn text @click="snack = false">Close</v-btn>
+        </v-snackbar>
     </div>
 </template>
 
@@ -122,6 +126,9 @@
          ],
          isLoading: false,
          serviceorders: [],
+         snack: false,
+         snackColor: '',
+         snackText: '',
 
 
      }),
@@ -138,7 +145,32 @@
          showConfig(id) {
              this.selectedService = id
              this.config = true
-         }
+         },
+         async deleteServiceOrder(pk) {
+             const res = await this.$dialog.confirm({
+                 text: "Are you sure you want to delete this Service Order?",
+                 title: "Warning"
+             })
+             if (res) {
+                 this.$api.deleteServiceOrder(pk)
+                     .then(() => {
+                         this.serviceorders = this.serviceorders.filter(function(e) {
+                             if (e.id != pk) {
+                                 return e
+                             }
+                         })
+                     })
+                     .catch((err) => {
+                         this.displayError()
+                         console.log(err)
+                     })
+             }
+         },
+         displayError() {
+             this.snack = true
+             this.snackColor = 'error'
+             this.snackText = 'Remote error'
+         },
 
      },
      mounted() {

@@ -258,6 +258,10 @@ export class APIService {
         const url = `${API_URL}/api/v1/orders/${pk}/`
         return this.instance.put(url, data).then(response => response.data)
     }
+    deleteServiceOrder(pk) {
+        const url = `${API_URL}/api/v1/orders/${pk}/`
+        return this.instance.delete(url).then(response => response.data)
+    }
     getServiceOrderConfig(pk) {
         const url = `${API_URL}/api/v1/orders/${pk}/config/`
         return this.instance.get(url).then(response => response.data)
