@@ -162,6 +162,14 @@ export class APIService {
         const url = `${API_URL}/api/v1/templates/${pk}/fields/`
         return this.instance.put(url, fieldset).then(response => response.data)
     }
+    getQuicktemplate(pk) {
+        const url = `${API_URL}/api/v1/templates/${pk}/quick/`
+        return this.instance.get(url).then(response => response.data)
+    }
+    compileQuicktemplate(pk, data) {
+        const url = `${API_URL}/api/v1/templates/${pk}/quick/`
+        return this.instance.post(url, data).then(response => response.data)
+    }
     listNodes() {
         const url = `${API_URL}/api/v1/nodes/`
         return this.instance.get(url).then(response => response.data)

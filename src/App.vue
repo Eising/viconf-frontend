@@ -26,13 +26,20 @@
                 </v-list-item>
                 <v-list-item to="/provision">
                     <v-list-item-icon>
-                        <v-icon>mdi-file-cog</v-icon>
+                        <v-icon>mdi-folder-cog</v-icon>
                     </v-list-item-icon>
                     <v-list-item-content>
                         <v-list-item-title>Provision Service</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
-
+                <v-list-item to="/templates/quick">
+                    <v-list-item-icon>
+                        <v-icon>mdi-file-cog</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>QuickTemplate</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
 
                 <v-list-group
                     prepend-icon="mdi-code-json"

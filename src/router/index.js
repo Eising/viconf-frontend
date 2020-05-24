@@ -29,6 +29,11 @@ const routes = [
         component: () => import(/* webpackChunkName: "TemplateList" */ '../views/TemplateListView.vue')
     },
     {
+        path: '/templates/quick',
+        name: 'QuickTemplate',
+        component: () => import(/* webpackChunkName: "QuickTemplate" */ '../views/QuickTemplateView.vue')
+    },
+    {
         path: '/templates/compose',
         name: 'TemplateCompose',
         // route level code-splitting
