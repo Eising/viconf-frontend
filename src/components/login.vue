@@ -69,11 +69,14 @@
      }),
      methods: {
          async doLogin() {
+             const self = this
              this.$api.requestToken({username: this.username, password: this.password})
                  .then((response) => {
                      this.$api.storeToken(response.access)
                      this.$api.storeRefreshToken(response.refresh)
+                     this.$store.commit('setUserName', self.username)
                      this.$router.go(-1)
+                     this.$forceUpdate()
                  })
                  .catch((err) => {
                      this.handleError(err)
@@ -94,9 +97,15 @@
              }
              console.log(error)
          },
+         clearUsername() {
+             this.$forceUpdate()
+             this.$store.commit('clearUserName')
+         },
+
 
      },
      mounted() {
+         this.clearUsername()
      }
  }
 </script>

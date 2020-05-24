@@ -21,7 +21,11 @@ export default new Vuex.Store({
           location: '',
           speed: '',
           service: null
-      }
+      },
+      user: {
+          username: null,
+          id: null,
+      },
 
   },
   mutations: {
@@ -74,6 +78,12 @@ export default new Vuex.Store({
               speed: '',
               service: null
           }
+      },
+      setUserName (state, value) {
+          state.user.username = value
+      },
+      clearUserName (state) {
+          state.user.username = null
       },
   },
   actions: {

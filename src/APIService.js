@@ -124,6 +124,10 @@ export class APIService {
         const url = `${API_URL}/api/token/`
         return this.instance.post(url, data).then(response => response.data)
     }
+    getCurrentUser() {
+        const url = `${API_URL}/api/v1/users/current/`
+        return this.instance.get(url).then(response => response.data)
+    }
     refreshToken(data) {
         const url = `${API_URL}/api/token/refresh/`
         return this.instance.post(url, data).then(response => response.data)

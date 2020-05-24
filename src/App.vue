@@ -91,33 +91,8 @@
         >
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
             <v-spacer />
-            <v-menu bottom right>
-                <template v-slot:activator="{ on }">
-                    <v-btn
-                        icon
-                        large
-                        v-on="on"
-                    >
-                        <v-avatar>
-                            <v-icon dark>mdi-account-circle</v-icon>
-                        </v-avatar>
-                    </v-btn>
-                </template>
-                <v-list>
-                    <v-list-item
-                        v-if="loggedIn"
-                        @click="logout"
-                    >
-                        <v-list-item-title>Logout</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item
-                        v-else
-                        to="/login"
-                    >
-                        <v-list-item-title>Login</v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
+            <ToolbarProfile></ToolbarProfile>
+
         </v-app-bar>
 
         <v-content class="blue-grey lighten-5">
@@ -145,11 +120,14 @@
 
 <script>
 
+ import ToolbarProfile from './components/ToolbarProfile.vue'
+ import { mapState } from 'vuex';
 
  export default {
      name: 'App',
 
      components: {
+         ToolbarProfile,
      },
 
      data: () => ({
@@ -164,11 +142,29 @@
          login() {
              this.$router.push({name: 'login'})
          },
+         async setUserName() {
+             if ((!this.username) && (this.loggedIn)) {
+                this.$api.getCurrentUser()
+                    .then((response) => {
+                        this.$store.commit('setUserName', response.username)
+                    })
+             }
+         },
      },
      computed: {
+
          loggedIn: function () {
              return this.$api.isAuthenticated()
-         }
-     }
+         },
+         ...mapState({
+             username: state => state.user.username
+         }),
+
+     },
+     mounted() {
+         this.setUserName()
+     },
+     watch: {
+     },
  };
 </script>
